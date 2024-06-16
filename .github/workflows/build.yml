@@ -80,7 +80,7 @@ jobs:
         run: |
           ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "hostapi" `
-            -DockerfilePath "./src/aspnet-core/src/Firebytes.Template.Web.Host/Dockerfile"
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Web.Host/Dockerfile"
 
   build-migrator:
     runs-on: ubuntu-22.04
@@ -110,7 +110,7 @@ jobs:
         run: |
           ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "migrator" `
-            -DockerfilePath "./src/aspnet-core/src/Firebytes.Template.Migrator/Dockerfile"
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Migrator/Dockerfile"
 
   build-complete:
     runs-on: ubuntu-22.04
