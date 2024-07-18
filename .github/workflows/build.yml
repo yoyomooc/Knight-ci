@@ -22,9 +22,29 @@ env:
   NPM_NPMRC: ${{ vars.NPM_NPMRC }}
 
 jobs:
-  build-vue:
+  changes:
     runs-on: ubuntu-22.04
-    if: github.event.commits.*.modified.* matches 'src/vue/**'
+    outputs:
+      vue: ${{ steps.changes.outputs.vue }}
+      hostapi: ${{ steps.changes.outputs.hostapi }}
+      migrator: ${{ steps.changes.outputs.migrator }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            vue:
+              - 'src/vue/**'
+            hostapi:
+              - 'src/hostapi/**'
+            migrator:
+              - 'src/migrator/**'
+
+  build-vue:
+    needs: changes
+    if: ${{ needs.changes.outputs.vue == 'true' }}
+    runs-on: ubuntu-22.04
     steps:
       # checkout source code
       - uses: actions/checkout@v2
@@ -45,8 +65,9 @@ jobs:
             -DockerfilePath "./src/vue/Dockerfile"
 
   build-hostapi:
+    needs: changes
+    if: ${{ needs.changes.outputs.hostapi == 'true' }}
     runs-on: ubuntu-22.04
-    if: github.event.commits.*.modified.* matches 'src/hostapi/**'
     steps:
       # checkout source code
       - uses: actions/checkout@v2
@@ -67,8 +88,9 @@ jobs:
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Web.Host/Dockerfile"
 
   build-migrator:
+    needs: changes
+    if: ${{ needs.changes.outputs.migrator == 'true' }}
     runs-on: ubuntu-22.04
-    if: github.event.commits.*.modified.* matches 'src/migrator/**'
     steps:
       # checkout source code
       - uses: actions/checkout@v2
@@ -90,7 +112,7 @@ jobs:
 
   build-complete:
     runs-on: ubuntu-22.04
-    if: success()
+    if: ${{ success() }}
     needs: [build-hostapi, build-migrator, build-vue]
     steps:
       # checkout source code
@@ -104,7 +126,7 @@ jobs:
 
   build-failure:
     runs-on: ubuntu-22.04
-    if: failure()
+    if: ${{ failure() }}
     needs: [build-hostapi, build-migrator, build-vue]
     steps:
       # checkout source code
