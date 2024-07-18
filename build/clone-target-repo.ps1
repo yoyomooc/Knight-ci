@@ -1,7 +1,7 @@
 # 仓库地址
 $RepoUrl = $env:GIT_REPO
 $Depth = $env:GIT_DEPTH
-if ([System.String]::IsNullOrWhiteSpace(i$Depth)) {
+if ([System.String]::IsNullOrWhiteSpace($Depth)) {
     $Depth = 10
 }
 
