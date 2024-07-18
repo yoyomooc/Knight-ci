@@ -9,7 +9,7 @@ if ($null -eq $Depth) {
 $rootPath = Split-Path -Parent (Get-Location).Path
 
 # 读取当前项目配置
-$ciConfigPath = Join-Path $rootPath "src" "ci-config.json-1"
+$ciConfigPath = Join-Path $rootPath "src" "ci-config.json"
 $ciConfig = (Get-Content -Path $ciConfigPath -Encoding UTF8) | ConvertFrom-Json
 
 
