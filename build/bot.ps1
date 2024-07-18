@@ -20,6 +20,7 @@ if ($ciConfig.mode -eq 'tag') {
 }
 $branchOrTag = $ciConfig.branch
 $commit = $ciConfig.commit
+$creationTime = $ciConfig.creationTime
 $gitlabPipelineId = $ciConfig.gitlabPipelineId
 
 $workflowUrl = "https://github.com/${env:repository}/actions/runs/${env:run_id}"
@@ -32,6 +33,7 @@ ${Msg}
 --- build info ---
 ${branchOrTagKey}: ${branchOrTag}
 commit: ${commit}
+creationTime: ${creationTime}
 github workflow: ${workflowUrl}
 gitlab pipeline: ${pipelineUrl}
 "@
