@@ -112,7 +112,10 @@ jobs:
 
   build-complete:
     runs-on: ubuntu-22.04
-    if: ${{ success() }}
+    if: |
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     needs: [build-hostapi, build-migrator, build-vue]
     steps:
       # checkout source code
