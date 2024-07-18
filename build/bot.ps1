@@ -5,9 +5,7 @@ param(
 )
 
 # 设置时区
-Set-TimeZone  -Id "China Standard Time"
-
-$currentDate = (Get-Date)
+$currentDate = (Get-Date).ToUniversalTime().AddHours(8)
 $currentDateStr = $currentDate.ToString('yyyy-MM-dd HH:mm:ss')
 
 $rootPath = Split-Path -Parent (Get-Location).Path
