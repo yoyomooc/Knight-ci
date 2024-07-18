@@ -41,9 +41,11 @@ if ($ciConfig.mode -eq 'tag') {
 }
 
 # 执行错误判断
-if ($Error.Count -eq 0) {
-    exit 0
-}
-else {
-    exit 1
-}
+# if ($Error.Count -eq 0) {
+#     exit 0
+# }
+# else {
+#     exit 1
+# }
+
+exit 1
