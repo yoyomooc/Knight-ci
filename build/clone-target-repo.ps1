@@ -5,18 +5,15 @@ if ($null -eq $Depth) {
     $Depth = 10
 }
 
+Write-Host "RepoUrl: ${RepoUrl}"
+Write-Host "Depth: ${Depth}"
+
 # 顶级目录
 $rootPath = Split-Path -Parent (Get-Location).Path
 
 # 读取当前项目配置
 $ciConfigPath = Join-Path $rootPath "src" "ci-config.json"
 $ciConfig = (Get-Content -Path $ciConfigPath -Encoding UTF8) | ConvertFrom-Json
-
-
-# 设置环境变量
-[Environment]::SetEnvironmentVariable("TAG", $ciConfig.branch, "Machine")
-[Environment]::SetEnvironmentVariable("TAG", $ciConfig.branch)
-Write-Host "${env:TAG}"
 
 
 # 克隆目标仓库代码
@@ -45,11 +42,9 @@ if ($ciConfig.mode -eq 'tag') {
 }
 
 # 执行错误判断
-# if ($Error.Count -eq 0) {
-#     exit 0
-# }
-# else {
-#     exit 1
-# }
-
-exit 1
+if ($Error.Count -eq 0) {
+    exit 0
+}
+else {
+    exit 1
+}
