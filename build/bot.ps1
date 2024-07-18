@@ -4,6 +4,9 @@ param(
     [string]$Msg
 )
 
+# 设置时区
+Set-TimeZone  -Id "China Standard Time"
+
 $currentDate = (Get-Date)
 $currentDateStr = $currentDate.ToString('yyyy-MM-dd HH:mm:ss')
 
