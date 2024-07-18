@@ -1,11 +1,15 @@
 # 仓库地址
 $RepoUrl = $env:GIT_REPO
+$Depth = $env:GIT_DEPTH
+if ($null -eq $Depth) {
+    $Depth = 10
+}
 
 # 顶级目录
 $rootPath = Split-Path -Parent (Get-Location).Path
 
 # 读取当前项目配置
-$ciConfigPath = Join-Path $rootPath "src" "ci-config.json"
+$ciConfigPath = Join-Path $rootPath "src" "ci-config.json-1"
 $ciConfig = (Get-Content -Path $ciConfigPath -Encoding UTF8) | ConvertFrom-Json
 
 
@@ -18,7 +22,7 @@ Write-Host "${env:TAG}"
 # 克隆目标仓库代码
 ## git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
 if ($ciConfig.mode -eq 'commit') {
-    git clone --depth 1 `
+    git clone --depth $Depth `
         -b $ciConfig.branch `
         $RepoUrl repo-code
     Set-Location ./repo-code
@@ -29,7 +33,7 @@ if ($ciConfig.mode -eq 'commit') {
     Set-Location repo-code/build
 }
 if ($ciConfig.mode -eq 'tag') {
-    git clone --depth 1 `
+    git clone --depth $Depth `
         --branch $ciConfig.branch `
         $RepoUrl repo-code
     Set-Location ./repo-code

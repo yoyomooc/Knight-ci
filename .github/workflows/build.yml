@@ -9,6 +9,7 @@ env:
   repository: ${{ github.repository }}
   run_id: ${{ github.run_id }}
   BOT: ${{ vars.BOT }}
+  GIT_DEPTH: ${{ vars.GIT_DEPTH }}
   GIT_REPO: ${{ vars.GIT_REPO }}
   GIT_REPO_PIPLINE: ${{ vars.GIT_REPO_PIPLINE }}
   BASE_IMAGE_REGISTRY: ${{ vars.BASE_IMAGE_REGISTRY }}
