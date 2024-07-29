@@ -65,7 +65,7 @@ jobs:
         working-directory: ./build
         run: |
           ./clone-target-repo.ps1
-          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uniapp" `
+          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uni-app" `
             -DockerfilePath "./src/uni-app/Dockerfile"
 
   build-vue:
