@@ -26,6 +26,7 @@ jobs:
   changes:
     runs-on: ubuntu-22.04
     outputs:
+      uniapp: ${{ steps.changes.outputs.uniapp }}
       vue: ${{ steps.changes.outputs.vue }}
       hostapi: ${{ steps.changes.outputs.hostapi }}
       migrator: ${{ steps.changes.outputs.migrator }}
@@ -35,12 +36,37 @@ jobs:
         id: changes
         with:
           filters: |
+            uniapp:
+              - 'src/uni-app/**'
             vue:
               - 'src/vue/**'
             hostapi:
               - 'src/hostapi/**'
             migrator:
               - 'src/migrator/**'
+
+  build-uniapp:
+    needs: changes
+    if: ${{ needs.changes.outputs.uniapp == 'true' }}
+    runs-on: ubuntu-22.04
+    steps:
+      # checkout source code
+      - uses: actions/checkout@v3
+      # login docker registry
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      # build
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uniapp" `
+            -DockerfilePath "./src/uni-app/Dockerfile"
 
   build-vue:
     needs: changes
@@ -117,7 +143,7 @@ jobs:
       always() &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
-    needs: [build-hostapi, build-migrator, build-vue]
+    needs: [build-uniapp, build-vue, build-hostapi, build-migrator]
     steps:
       # checkout source code
       - uses: actions/checkout@v3
@@ -131,7 +157,7 @@ jobs:
   build-failure:
     runs-on: ubuntu-22.04
     if: ${{ failure() }}
-    needs: [build-hostapi, build-migrator, build-vue]
+    needs: [build-uniapp, build-vue, build-hostapi, build-migrator]
     steps:
       # checkout source code
       - uses: actions/checkout@v3
