@@ -182,7 +182,14 @@ jobs:
   build-failure:
     runs-on: ubuntu-22.04
     if: ${{ failure() }}
-    needs: [build-uniapp, build-vue, build-hostapi, build-migrator]
+    needs:
+      [
+        build-fengshenauth,
+        build-uniapp,
+        build-vue,
+        build-hostapi,
+        build-migrator,
+      ]
     steps:
       # checkout source code
       - uses: actions/checkout@v3
