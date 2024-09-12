@@ -45,6 +45,29 @@ jobs:
             migrator:
               - 'src/migrator/**'
 
+  build-fengshenauth:
+    needs: changes
+    if: ${{ needs.changes.outputs.fengshenauth == 'true' }}
+    runs-on: ubuntu-22.04
+    steps:
+      # checkout source code
+      - uses: actions/checkout@v3
+      # login docker registry
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      # build
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshenauth" `
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenAuth/Dockerfile"
+
   build-uniapp:
     needs: changes
     if: ${{ needs.changes.outputs.uniapp == 'true' }}
