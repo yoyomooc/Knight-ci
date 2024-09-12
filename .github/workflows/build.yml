@@ -169,7 +169,14 @@ jobs:
       always() &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
-    needs: [build-uniapp, build-vue, build-hostapi, build-migrator]
+    needs:
+      [
+        build-fengshenauth,
+        build-uniapp,
+        build-vue,
+        build-hostapi,
+        build-migrator,
+      ]
     steps:
       # checkout source code
       - uses: actions/checkout@v3
