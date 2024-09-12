@@ -26,6 +26,7 @@ jobs:
   changes:
     runs-on: ubuntu-22.04
     outputs:
+      fengshenauth: ${{ steps.changes.outputs.fengshenauth }}
       uniapp: ${{ steps.changes.outputs.uniapp }}
       vue: ${{ steps.changes.outputs.vue }}
       hostapi: ${{ steps.changes.outputs.hostapi }}
