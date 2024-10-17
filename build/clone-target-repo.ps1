@@ -18,7 +18,7 @@ $ciConfig = (Get-Content -Path $ciConfigPath -Encoding UTF8) | ConvertFrom-Json
 # 设置环境变量
 [Environment]::SetEnvironmentVariable("TAG", $ciConfig.branch, "Machine")
 [Environment]::SetEnvironmentVariable("TAG", $ciConfig.branch)
-Write-Host "${env:TAG}"
+Write-Host "标签的值🏷: ${env:TAG}"
 
 # 克隆目标仓库代码
 ## git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
