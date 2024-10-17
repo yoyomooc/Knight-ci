@@ -3,7 +3,7 @@ name: "buildx"
 on:
   push:
     paths:
-      - "**/**"
+      - "src/**"
 
 env:
   repository: ${{ github.repository }}
@@ -31,6 +31,7 @@ jobs:
       vue: ${{ steps.changes.outputs.vue }}
       hostapi: ${{ steps.changes.outputs.hostapi }}
       migrator: ${{ steps.changes.outputs.migrator }}
+      mode: ${{ steps.set-mode.outputs.mode }}
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v3
@@ -47,22 +48,23 @@ jobs:
               - 'src/hostapi/**'
             migrator:
               - 'src/migrator/**'
+      - name: Set Mode
+        id: set-mode
+        shell: pwsh
+        run: ./set-mode.ps1
 
   build-fengshenauth:
     needs: changes
-    # if: ${{ needs.changes.outputs.fengshenauth == 'true' }}
+    if: ${{ needs.changes.outputs.fengshenauth == 'true' || needs.changes.outputs.mode == 'tag' }}
     runs-on: ubuntu-22.04
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # login docker registry
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{env.IMAGE_REGISTRY}}
           username: ${{env.IMAGE_REGISTRY_USERNAME}}
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
@@ -73,19 +75,16 @@ jobs:
 
   build-uniapp:
     needs: changes
-  #    if: ${{ needs.changes.outputs.uniapp == 'true' }}
+    if: ${{ needs.changes.outputs.uniapp == 'true' || needs.changes.outputs.mode == 'tag' }}
     runs-on: ubuntu-22.04
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # login docker registry
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{env.IMAGE_REGISTRY}}
           username: ${{env.IMAGE_REGISTRY_USERNAME}}
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
@@ -96,19 +95,16 @@ jobs:
 
   build-vue:
     needs: changes
-  #    if: ${{ needs.changes.outputs.vue == 'true' }}
+    if: ${{ needs.changes.outputs.vue == 'true' || needs.changes.outputs.mode == 'tag' }}
     runs-on: ubuntu-22.04
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # login docker registry
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{env.IMAGE_REGISTRY}}
           username: ${{env.IMAGE_REGISTRY_USERNAME}}
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
@@ -119,19 +115,16 @@ jobs:
 
   build-hostapi:
     needs: changes
-  #    if: ${{ needs.changes.outputs.hostapi == 'true' }}
+    if: ${{ needs.changes.outputs.hostapi == 'true' || needs.changes.outputs.mode == 'tag' }}
     runs-on: ubuntu-22.04
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # login docker registry
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{env.IMAGE_REGISTRY}}
           username: ${{env.IMAGE_REGISTRY_USERNAME}}
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
@@ -142,19 +135,16 @@ jobs:
 
   build-migrator:
     needs: changes
-  #    if: ${{ needs.changes.outputs.migrator == 'true' }}
+    if: ${{ needs.changes.outputs.migrator == 'true' || needs.changes.outputs.mode == 'tag' }}
     runs-on: ubuntu-22.04
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # login docker registry
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{env.IMAGE_REGISTRY}}
           username: ${{env.IMAGE_REGISTRY_USERNAME}}
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
@@ -178,9 +168,7 @@ jobs:
         build-migrator,
       ]
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
@@ -199,9 +187,7 @@ jobs:
         build-migrator,
       ]
     steps:
-      # checkout source code
       - uses: actions/checkout@v3
-      # build
       - name: build 1
         shell: pwsh
         working-directory: ./build
