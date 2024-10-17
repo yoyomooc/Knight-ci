@@ -8,6 +8,9 @@ param(
 $currentDate = (Get-Date).ToUniversalTime().AddHours(8)
 $currentDateStr = $currentDate.ToString('yyyy-MM-dd HH:mm:ss')
 
+Write-Host "$currentDate"+$currentDate
+
+
 $rootPath = Split-Path -Parent (Get-Location).Path
 
 # 读取当前项目配置
@@ -20,13 +23,17 @@ if ($ciConfig.mode -eq 'tag') {
 }
 $branchOrTag = $ciConfig.branch
 $commit = $ciConfig.commit
-$creationTime = $ciConfig.creationTime
+$creationTime = [DateTime]::Parse($ciConfig.creationTime).ToUniversalTime().AddHours(8)
+
+Write-Host "$creationTime"+$creationTime
+
 $gitlabPipelineId = $ciConfig.gitlabPipelineId
 
 $workflowUrl = "https://github.com/${env:repository}/actions/runs/${env:run_id}"
 $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 
-$buildDuration = (Get-Date) - $currentDate
+# 计算构建时长
+$buildDuration = $currentDate - $creationTime
 
 # 根据编译结果生成通知消息
 if ($BuildSuccess) {
