@@ -3,7 +3,7 @@ name: "buildx"
 on:
   push:
     paths:
-      - "src/**"
+      - "**/**"
 
 env:
   repository: ${{ github.repository }}
@@ -50,7 +50,7 @@ jobs:
 
   build-fengshenauth:
     needs: changes
-    if: ${{ needs.changes.outputs.fengshenauth == 'true' }}
+    # if: ${{ needs.changes.outputs.fengshenauth == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # checkout source code
@@ -73,7 +73,7 @@ jobs:
 
   build-uniapp:
     needs: changes
-    if: ${{ needs.changes.outputs.uniapp == 'true' }}
+  #    if: ${{ needs.changes.outputs.uniapp == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # checkout source code
@@ -96,7 +96,7 @@ jobs:
 
   build-vue:
     needs: changes
-    if: ${{ needs.changes.outputs.vue == 'true' }}
+  #    if: ${{ needs.changes.outputs.vue == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # checkout source code
@@ -119,7 +119,7 @@ jobs:
 
   build-hostapi:
     needs: changes
-    if: ${{ needs.changes.outputs.hostapi == 'true' }}
+  #    if: ${{ needs.changes.outputs.hostapi == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # checkout source code
@@ -142,7 +142,7 @@ jobs:
 
   build-migrator:
     needs: changes
-    if: ${{ needs.changes.outputs.migrator == 'true' }}
+  #    if: ${{ needs.changes.outputs.migrator == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # checkout source code
