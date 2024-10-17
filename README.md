@@ -1,5 +1,4 @@
-
-## 项目简介
+# 项目简介
 
 Knight-ci 是一个用于自动化CI/CD流程的项目，旨在提高开发效率和代码质量。
 
@@ -41,4 +40,4 @@ Knight-ci 是一个用于自动化CI/CD流程的项目，旨在提高开发效�
 
 ## 许可证
 
-本项目使用 [MIT 许可证](LICENSE)。
+本项目使用 [GNU Lesser General Public License v2.1](LICENSE)。
