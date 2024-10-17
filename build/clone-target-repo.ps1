@@ -20,6 +20,12 @@ $ciConfig = (Get-Content -Path $ciConfigPath -Encoding UTF8) | ConvertFrom-Json
 [Environment]::SetEnvironmentVariable("TAG", $ciConfig.branch)
 Write-Host "标签的值🏷: ${env:TAG}"
 
+[Environment]::SetEnvironmentVariable("Mode", $ciConfig.mode)
+
+
+Write-Host "Mode: ${env:Mode}"
+
+
 # 克隆目标仓库代码
 ## git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
 if ($ciConfig.mode -eq 'commit') {
