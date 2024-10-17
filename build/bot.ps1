@@ -1,7 +1,7 @@
-
 param(
     [string]$BotUrl,
-    [string]$Msg
+    [string]$Msg,
+    [bool]$BuildSuccess
 )
 
 # 设置时区
@@ -26,31 +26,64 @@ $gitlabPipelineId = $ciConfig.gitlabPipelineId
 $workflowUrl = "https://github.com/${env:repository}/actions/runs/${env:run_id}"
 $pipelineUrl = "${env:GIT_REPO_PIPLINE}/${gitlabPipelineId}"
 
-$noticeMsg = @"
---- ${currentDateStr} ---
-${Msg}
+$buildDuration = (Get-Date) - $currentDate
 
---- build info ---
-${branchOrTagKey}: ${branchOrTag}
-commit: ${commit}
-creationTime: ${creationTime}
-github workflow: ${workflowUrl}
-gitlab pipeline: ${pipelineUrl}
-"@
-
-
-# ----------------- 发送通知 -----------------
-$body = @{
-    msg_type = 'text'
-    content  = @{
-        text = $noticeMsg
-    }
+# 根据编译结果生成通知消息
+if ($BuildSuccess) {
+    $title = "编译成功通知"
+    $message = "编译成功！✨ 代码已经顺利上线，快去看看吧！"
+    $emoji = "🚀"
+} else {
+    $title = "编译失败通知"
+    $message = "编译失败！💔 请检查代码，尽快修复问题哦！"
+    $emoji = "💔"
 }
 
-$bodyJson = ConvertTo-Json $body
+# 构建富文本内容
+$content = @"
+{
+    "msg_type": "post",
+    "content": {
+        "post": {
+            "zh_cn": {
+                "title": "$title",
+                "content": [
+                    [{
+                        "tag": "text",
+                        "text": "--- ${currentDateStr} ---\n${message}\n\n--- 构建信息 ---\n${branchOrTagKey}: ${branchOrTag}\n提交: ${commit}\n创建时间: ${creationTime}\n构建时长: ${buildDuration}\nGitHub 工作流: "
+                    }, {
+                        "tag": "a",
+                        "text": "查看详情",
+                        "href": "${workflowUrl}"
+                    }, {
+                        "tag": "text",
+                        "text": "\nGitLab 流水线: "
+                    }, {
+                        "tag": "a",
+                        "text": "查看详情",
+                        "href": "${pipelineUrl}"
+                    }, {
+                        "tag": "text",
+                        "text": "\n${emoji} ${title} 🎉"
+                    }]
+                ]
+            }
+        }
+    }
+}
+"@
 
-Invoke-RestMethod `
-    -Method 'Post' `
-    -ContentType 'application/json' `
-    -Uri $botUrl `
-    -Body $bodyJson
+# ----------------- 发送通知 -----------------
+$bodyJson = $content | ConvertFrom-Json | ConvertTo-Json -Depth 10
+
+try {
+    Invoke-RestMethod `
+        -Method 'Post' `
+        -ContentType 'application/json' `
+        -Uri $BotUrl `
+        -Body $bodyJson
+    Write-Host "通知发送成功"
+} catch {
+    Write-Host "通知发送失败: $_"
+    # 记录错误日志或其他处理
+}

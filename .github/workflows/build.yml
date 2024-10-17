@@ -185,7 +185,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Complete'
+          ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Complete' -BuildSuccess $true
 
   build-failure:
     runs-on: ubuntu-22.04
@@ -206,4 +206,4 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Failure'
+          ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Failure' -BuildSuccess $false
