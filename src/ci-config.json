@@ -1,7 +1,7 @@
 {
-  "branch": "0.2.2.5",
-  "mode": "tag",
-  "creationTime": "2024-10-17 23:19:54",
-  "gitlabPipelineId": "7352",
-  "commit": "6e54f128b41692ba07cafe43b258640266872eee"
+  "creationTime": "2024-10-18 00:06:13",
+  "mode": "commit",
+  "commit": "5704018e3e7776ba718e0ed37f96c97ef43b9b9e",
+  "branch": "develop",
+  "gitlabPipelineId": "7353"
 }
