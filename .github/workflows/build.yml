@@ -51,6 +51,7 @@ jobs:
       - name: Set Mode
         id: set-mode
         shell: pwsh
+        working-directory: ./build
         run: ./set-mode.ps1
 
   build-fengshenauth:
