@@ -1,7 +1,7 @@
 {
-  "creationTime": "2024-11-20 11:23:23",
-  "gitlabPipelineId": "8011",
-  "commit": "fa93a519f102fad94e7d83e2bd037a8927bac831",
+  "commit": "0f802f124afd60ba9abc06278405cc99102e451c",
   "mode": "commit",
-  "branch": "develop"
+  "branch": "main-lrs-prod",
+  "creationTime": "2024-11-20 11:30:35",
+  "gitlabPipelineId": "8017"
 }
