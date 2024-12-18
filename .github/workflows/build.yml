@@ -26,6 +26,7 @@ jobs:
   changes:
     runs-on: ubuntu-22.04
     outputs:
+      fengshensyncjob: ${{ steps.changes.outputs.fengshensyncjob }}
       fengshenauth: ${{ steps.changes.outputs.fengshenauth }}
       uniapp: ${{ steps.changes.outputs.uniapp }}
       vue: ${{ steps.changes.outputs.vue }}
@@ -38,6 +39,8 @@ jobs:
         id: changes
         with:
           filters: |
+            fengshensyncjob:
+              - 'src/fengshensyncjob/**'
             fengshenauth:
               - 'src/fengshenauth/**'
             uniapp:
@@ -53,6 +56,26 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: ./set-mode.ps1
+
+  build-fengshensyncjob:
+    needs: changes
+    if: ${{ needs.changes.outputs.fengshensyncjob == 'true' || needs.changes.outputs.mode == 'tag' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.IMAGE_REGISTRY}}
+          username: ${{env.IMAGE_REGISTRY_USERNAME}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+      - name: build 1
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./clone-target-repo.ps1
+          ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshensyncjob" `
+            -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenSyncJob/Dockerfile"
 
   build-fengshenauth:
     needs: changes
@@ -162,6 +185,7 @@ jobs:
       !contains(needs.*.result, 'cancelled')
     needs:
       [
+        build-fengshensyncjob,
         build-fengshenauth,
         build-uniapp,
         build-vue,
@@ -181,6 +205,7 @@ jobs:
     if: ${{ failure() }}
     needs:
       [
+        build-fengshensyncjob,
         build-fengshenauth,
         build-uniapp,
         build-vue,
