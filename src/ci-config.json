@@ -1,7 +1,7 @@
 {
-  "gitlabPipelineId": "8718",
-  "creationTime": "2025-01-25 11:01:33",
-  "branch": "main",
-  "commit": "d5d0856bee5c300408281d8a90312f9b031157f8",
+  "branch": "main-next",
+  "creationTime": "2025-01-25 11:06:27",
+  "commit": "c8c666ba229805cc451c1d236cd433b95aaaabb4",
+  "gitlabPipelineId": "8719",
   "mode": "commit"
 }
