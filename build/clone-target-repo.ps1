@@ -36,8 +36,6 @@ if ($ciConfig.mode -eq 'commit') {
     git log
     git checkout $ciConfig.commit
     Set-Location ..
-    # 切换到目标仓库代码
-    Set-Location repo-code/build
 }
 if ($ciConfig.mode -eq 'tag') {
     git clone --depth $Depth `
@@ -47,9 +45,9 @@ if ($ciConfig.mode -eq 'tag') {
     git log
     git checkout $ciConfig.commit
     Set-Location ..
-    # 切换到目标仓库代码
-    Set-Location repo-code/build
 }
+
+
 
 # 执行错误判断
 if ($Error.Count -eq 0) {

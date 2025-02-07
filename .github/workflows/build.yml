@@ -55,7 +55,14 @@ jobs:
         id: set-mode
         shell: pwsh
         working-directory: ./build
-        run: ./set-mode.ps1
+        run: |
+          ./set-mode.ps1
+          ./clone-target-repo.ps1
+      - name: Upload directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: repo-code
+          path: repo-code
 
   build-fengshensyncjob:
     needs: changes
@@ -83,6 +90,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: repo-code
+          path: repo-code
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -91,9 +103,8 @@ jobs:
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
       - name: build 1
         shell: pwsh
-        working-directory: ./build
+        working-directory: ./repo-code/build
         run: |
-          ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshenauth" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenAuth/Dockerfile"
 
@@ -111,9 +122,8 @@ jobs:
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
       - name: build 1
         shell: pwsh
-        working-directory: ./build
+        working-directory: ./repo-code/build
         run: |
-          ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uni-app" `
             -DockerfilePath "./src/uni-app/Dockerfile"
 
@@ -131,9 +141,8 @@ jobs:
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
       - name: build 1
         shell: pwsh
-        working-directory: ./build
+        working-directory: ./repo-code/build
         run: |
-          ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "vue" `
             -DockerfilePath "./src/vue/Dockerfile"
 
@@ -151,9 +160,8 @@ jobs:
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
       - name: build 1
         shell: pwsh
-        working-directory: ./build
+        working-directory: ./repo-code/build
         run: |
-          ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "hostapi" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Web.Host/Dockerfile"
 
@@ -171,9 +179,8 @@ jobs:
           password: ${{env.IMAGE_REGISTRY_PASSWORD}}
       - name: build 1
         shell: pwsh
-        working-directory: ./build
+        working-directory: ./repo-code/build
         run: |
-          ./clone-target-repo.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "migrator" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Migrator/Dockerfile"
 
