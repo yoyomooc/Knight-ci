@@ -1,3 +1,13 @@
+# 仓库地址
+$RepoUrl = $env:GIT_REPO
+$Depth = $env:GIT_DEPTH
+if ([System.String]::IsNullOrWhiteSpace($Depth)) {
+    $Depth = 10
+}
+
+Write-Host "RepoUrl: ${RepoUrl}"
+Write-Host "Depth: ${Depth}"
+
 # 顶级目录
 $rootPath = Split-Path -Parent (Get-Location).Path
 
@@ -15,6 +25,13 @@ Write-Host "标签的值🏷: ${env:TAG}"
 
 Write-Host "Mode: ${env:Mode}"
 
-## 设置路径
-Set-Location ./repo-code/build
 
+Set-Location repo-code/build
+
+# 执行错误判断
+if ($Error.Count -eq 0) {
+    exit 0
+}
+else {
+    exit 1
+}
