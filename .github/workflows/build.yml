@@ -60,10 +60,9 @@ jobs:
           ./clone-target-repo.ps1
       - name: Upload directory as artifact
         uses: actions/upload-artifact@v4
-        working-directory: ./build
         with:
           name: repo-code
-          path: ./repo-code/
+          path: ./build/repo-code/
 
   build-fengshensyncjob:
     needs: changes
