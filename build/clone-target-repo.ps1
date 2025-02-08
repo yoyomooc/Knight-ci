@@ -37,7 +37,7 @@ if ($ciConfig.mode -eq 'commit') {
     git checkout $ciConfig.commit
     Set-Location ..
     # 压缩源码
-    Compress-Archive -Path ./repo-code/* -DestinationPath ./repo-code.zip
+    # Compress-Archive -Path ./repo-code/* -DestinationPath ./repo-code.zip
     # 切换到目标仓库代码
     Set-Location repo-code/build
 }
@@ -50,7 +50,7 @@ if ($ciConfig.mode -eq 'tag') {
     git checkout $ciConfig.commit
     Set-Location ..
     # 压缩源码
-    Compress-Archive -Path ./repo-code/* -DestinationPath ./repo-code.zip
+    # Compress-Archive -Path ./repo-code/* -DestinationPath ./repo-code.zip
     # 切换到目标仓库代码
     Set-Location repo-code/build
 }
