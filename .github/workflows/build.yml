@@ -55,7 +55,14 @@ jobs:
         id: set-mode
         shell: pwsh
         working-directory: ./build
-        run: ./set-mode.ps1
+        run: |
+          ./set-mode.ps1
+          ./clone-target-repo.ps1
+      - name: Upload Repo Code
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
 
   build-fengshensyncjob:
     needs: changes
@@ -63,6 +70,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download Repo Code
+        uses: actions/download-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -73,7 +85,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./clone-target-repo.ps1
+          ./set-env.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshensyncjob" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenSyncJob/Dockerfile"
 
@@ -83,6 +95,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download Repo Code
+        uses: actions/download-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -93,7 +110,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./clone-target-repo.ps1
+          ./set-env.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "fengshenauth" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.FengShenAuth/Dockerfile"
 
@@ -103,6 +120,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download Repo Code
+        uses: actions/download-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -113,7 +135,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./clone-target-repo.ps1
+          ./set-env.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "uni-app" `
             -DockerfilePath "./src/uni-app/Dockerfile"
 
@@ -123,6 +145,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download Repo Code
+        uses: actions/download-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -133,7 +160,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./clone-target-repo.ps1
+          ./set-env.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "vue" -ProjectName "vue" `
             -DockerfilePath "./src/vue/Dockerfile"
 
@@ -143,6 +170,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download Repo Code
+        uses: actions/download-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -153,7 +185,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./clone-target-repo.ps1
+          ./set-env.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "hostapi" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Web.Host/Dockerfile"
 
@@ -163,6 +195,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - name: Download Repo Code
+        uses: actions/download-artifact@v4
+        with:
+          name: repo-code
+          path: ./build/repo-code.zip
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
@@ -173,7 +210,7 @@ jobs:
         shell: pwsh
         working-directory: ./build
         run: |
-          ./clone-target-repo.ps1
+          ./set-env.ps1
           ./build.ps1 -ImageName "knightboss" -ProjectType "dotnet" -ProjectName "migrator" `
             -DockerfilePath "./src/aspnet-core/src/YoyoBoot.Template.Migrator/Dockerfile"
 
@@ -194,7 +231,7 @@ jobs:
       ]
     steps:
       - uses: actions/checkout@v3
-      - name: build 1
+      - name: notification
         shell: pwsh
         working-directory: ./build
         run: |
@@ -214,8 +251,20 @@ jobs:
       ]
     steps:
       - uses: actions/checkout@v3
-      - name: build 1
+      - name: notification
         shell: pwsh
         working-directory: ./build
         run: |
           ./bot.ps1 -BotUrl $env:BOT -Msg 'Build Failure' -BuildSuccess $false
+
+  changes-failure:
+    runs-on: ubuntu-22.04
+    if: ${{ failure() }}
+    needs: changes
+    steps:
+      - uses: actions/checkout@v3
+      - name: notification
+        shell: pwsh
+        working-directory: ./build
+        run: |
+          ./bot.ps1 -BotUrl $env:BOT -Msg 'Changes Failure' -BuildSuccess $false

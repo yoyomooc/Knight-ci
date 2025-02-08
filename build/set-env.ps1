@@ -25,7 +25,10 @@ Write-Host "标签的值🏷: ${env:TAG}"
 
 Write-Host "Mode: ${env:Mode}"
 
+# 解压源码文件
+Expand-Archive -Path ./repo-code.zip -DestinationPath ./repo-code
 
+# 切换到源码build目录进行操作
 Set-Location repo-code/build
 
 # 执行错误判断
